@@ -4,7 +4,9 @@
   "description": "HTML5 game ===========",
   "main": "scripts/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "lint": "jshint scripts/ __tests__/",
+    "style": "jscs ."
   },
   "repository": {
     "type": "git",
