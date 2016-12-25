@@ -1,5 +1,12 @@
 "use strict";
+const EventEmitter = require('events');
 
-module.exports = function Lift(building) {
-  this.building = building;
-};
+class Lift extends EventEmitter {
+  constructor(building) {
+    super();
+    this.building = building;
+  }
+}
+
+
+module.exports = Lift;

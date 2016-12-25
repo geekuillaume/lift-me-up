@@ -13,3 +13,5 @@ describe("Floor model", () => {
     assert.deepEqual(floor.building, building);
   });
 });
+
+
