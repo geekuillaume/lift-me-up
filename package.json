@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/Neamar/lift-me-up/issues"
   },
-  "homepage": "https://github.com/Neamar/lift-me-up#readme"
+  "homepage": "https://github.com/Neamar/lift-me-up#readme",
+  "devDependencies": {
+    "jest": "^18.0.0"
+  }
 }
