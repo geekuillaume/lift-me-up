@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Neamar/lift-me-up#readme",
   "devDependencies": {
+    "debug": "^2.5.1",
     "jest": "^18.0.0"
   }
 }

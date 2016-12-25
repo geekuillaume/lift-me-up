@@ -4,6 +4,7 @@ const EventEmitter = require('events');
 class Building extends EventEmitter {
   constructor() {
     super();
+    this.state = Building.STATE_CREATING;
     this.floors = [];
     this.lifts = [];
   }
@@ -13,9 +14,25 @@ class Building extends EventEmitter {
   }
 
   addFloor(floor) {
+    floor.number = this.floors.length;
+
     this.floors.push(floor);
+  }
+
+  start() {
+    this.state = Building.STATE_PLAYING;
+    this.emit(Building.START_LEVEL);
+  }
+
+  tick() {
+    this.emit(Building.TICK);
   }
 }
 
+Building.STATE_CREATING = "creation";
+Building.STATE_PLAYING = "playing";
+
+Building.START_LEVEL = "startLevel";
+Building.TICK = "tick";
 
 module.exports = Building;
