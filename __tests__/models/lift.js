@@ -28,7 +28,7 @@ describe("Lift model", () => {
     assert.deepEqual(lift.queuedFloors, [floor]);
   });
 
-  it("should move to next floor", () => {
+  it.only("should move to next floor", () => {
     var building = new Building();
     var ground = new Floor(building);
     var firstFloor = new Floor(building);
@@ -39,6 +39,7 @@ describe("Lift model", () => {
 
     building.start();
     lift.addCommand(firstFloor);
+    building.tick();
 
     expect(lift.currentFloor).toBe(ground);
     assert.deepEqual(lift.queuedFloors, [firstFloor]);

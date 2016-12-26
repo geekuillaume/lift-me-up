@@ -13,21 +13,28 @@ class Lift extends EventEmitter {
     this.currentAnimationStep = 0;
     this.state = Lift.STATE_IDLE;
 
-    this.on(Building.TICK, this.tick);
+    this.stateFunctions = {};
+    this.stateFunctions[Lift.STATE_IDLE] = this.stateIdle;
+    this.stateFunctions[Lift.STATE_MOVING] = this.stateMoving;
+    this.stateFunctions[Lift.STATE_DOORS_OPENING] = this.stateDoorsOpening;
+    this.stateFunctions[Lift.STATE_DOORS_OPEN] = this.stateDoorsOpen;
+    this.stateFunctions[Lift.STATE_DOORS_CLOSING] = this.stateDoorsClosing;
+
+    var self = this;
+    building.on(Building.TICK, () => {
+      self.tick();
+    });
   }
 
   addCommand(floor) {
     log("Queuing new floor: " + floor.number);
 
     this.queuedFloors.push(floor);
-    this.idleOrMove();
   }
 
-  idleOrMove() {
-    if(this.queuedFloors.length === 0) {
-      this.setState(Lift.STATE_IDLE);
-    }
-    else {
+  stateIdle() {
+    console.log("IDLING", this.queuedFloors.length);
+    if(this.queuedFloors.length > 0) {
       this.setState(Lift.STATE_MOVING);
     }
   }
@@ -39,31 +46,35 @@ class Lift extends EventEmitter {
     this.currentAnimationStep = 0;
   }
 
+  waitForAnimation(threshold, nextState) {
+    if(this.currentAnimationStep >= threshold) {
+      this.setState(nextState);
+    }
+  }
+
   tick() {
-    if(this.state === Lift.STATE_IDLE) {
-      return;
-    }
-
     this.currentAnimationStep += 1;
+    console.log("LS:" , this.state)
+    this.stateFunctions[this.state].bind(this)();
+  }
 
-    if(this.state === Lift.STATE_MOVING) {
-      var numbersOfFloors = Math.abs(this.currentFloor.number - this.queuedFloors[0].number);
-      if(this.currentAnimationStep >= numbersOfFloors * Lift.SPEED_MOVE_ONE_FLOOR) {
-        // Arrived at floor
-        this.currentFloor = this.queuedFloors.pop();
+  stateMoving() {
+    var numbersOfFloors = Math.abs(this.currentFloor.number - this.queuedFloors[0].number);
 
-        // Start opening doors
-        this.setState(Lift.STATE_DOORS_OPENING);
-      }
+    if(this.currentAnimationStep >= numbersOfFloors * Lift.SPEED_MOVE_ONE_FLOOR) {
+      // Arrived at floor
+      this.currentFloor = this.queuedFloors.pop();
+
+      // Start opening doors
+      this.setState(Lift.STATE_DOORS_OPENING);
     }
-    else if(this.state === Lift.STATE_DOORS_OPENING && this.currentAnimationStep >= Lift.SPEED_DOORS_OPEN) {
-      // Doors are now open
-      this.setState(Lift.STATE_DOORS_OPEN);
-    }
-    else if(this.state === Lift.STATE_DOORS_CLOSING && this.currentAnimationStep >= Lift.SPEED_DOORS_CLOSE) {
-      // Doors are now closed, move to next destination if any
-      this.idleOrMove();
-    }
+  }
+  stateDoorsOpening() {
+    this.waitForAnimation(Lift.SPEED_DOORS_OPEN, Lift.STATE_DOORS_OPEN);
+  }
+
+  stateDoorsClosing() {
+    this.waitForAnimation(Lift.SPEED_DOORS_CLOSE, Lift.STATE_IDLE);
   }
 }
 
