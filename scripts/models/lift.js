@@ -20,10 +20,8 @@ class Lift extends EventEmitter {
     this.stateFunctions[Lift.STATE_DOORS_OPEN] = this.stateDoorsOpen;
     this.stateFunctions[Lift.STATE_DOORS_CLOSING] = this.stateDoorsClosing;
 
-    var self = this;
-    building.on(Building.TICK, () => {
-      self.tick();
-    });
+    // Working around socping issues, adding "buffer" function keeping the this context intact
+    building.on(Building.TICK, () => this.tick());
   }
 
   addCommand(floor) {
@@ -33,7 +31,6 @@ class Lift extends EventEmitter {
   }
 
   stateIdle() {
-    console.log("IDLING", this.queuedFloors.length);
     if(this.queuedFloors.length > 0) {
       this.setState(Lift.STATE_MOVING);
     }
@@ -54,7 +51,6 @@ class Lift extends EventEmitter {
 
   tick() {
     this.currentAnimationStep += 1;
-    console.log("LS:" , this.state)
     this.stateFunctions[this.state].bind(this)();
   }
 

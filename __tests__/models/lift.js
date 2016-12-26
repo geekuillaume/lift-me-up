@@ -28,7 +28,7 @@ describe("Lift model", () => {
     assert.deepEqual(lift.queuedFloors, [floor]);
   });
 
-  it.only("should move to next floor", () => {
+  it("should move to next floor", () => {
     var building = new Building();
     var ground = new Floor(building);
     var firstFloor = new Floor(building);
@@ -41,12 +41,15 @@ describe("Lift model", () => {
     lift.addCommand(firstFloor);
     building.tick();
 
+    // Lift should start moving
     expect(lift.currentFloor).toBe(ground);
     assert.deepEqual(lift.queuedFloors, [firstFloor]);
     assert.equal(lift.state, Lift.STATE_MOVING);
 
+
     building.fastForward(Lift.SPEED_MOVE_ONE_FLOOR);
 
+    // Lift should be opening its doors
     expect(lift.currentFloor).toBe(firstFloor);
     assert.deepEqual(lift.queuedFloors, []);
     expect(lift.state).toBe(Lift.STATE_DOORS_OPENING);

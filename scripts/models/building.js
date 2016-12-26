@@ -25,7 +25,7 @@ class Building extends EventEmitter {
   }
 
   tick() {
-    console.log(this.emit(Building.TICK));
+    this.emit(Building.TICK);
   }
 
   fastForward(ticksCount) {
