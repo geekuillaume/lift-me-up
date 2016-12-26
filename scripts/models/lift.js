@@ -17,7 +17,8 @@ class Lift extends EventEmitter {
     this.stateFunctions[Lift.STATE_IDLE] = this.stateIdle;
     this.stateFunctions[Lift.STATE_MOVING] = this.stateMoving;
     this.stateFunctions[Lift.STATE_DOORS_OPENING] = this.stateDoorsOpening;
-    this.stateFunctions[Lift.STATE_DOORS_OPEN] = this.stateDoorsOpen;
+    this.stateFunctions[Lift.STATE_UNLOADING] = this.stateUnloading;
+    this.stateFunctions[Lift.STATE_LOADING] = this.stateLoading;
     this.stateFunctions[Lift.STATE_DOORS_CLOSING] = this.stateDoorsClosing;
 
     // Working around socping issues, adding "buffer" function keeping the this context intact
@@ -66,11 +67,15 @@ class Lift extends EventEmitter {
     }
   }
   stateDoorsOpening() {
-    this.waitForAnimation(Lift.SPEED_DOORS_OPEN, Lift.STATE_DOORS_OPEN);
+    this.waitForAnimation(Lift.SPEED_DOORS_OPEN, Lift.STATE_UNLOADING);
   }
 
   stateDoorsClosing() {
     this.waitForAnimation(Lift.SPEED_DOORS_CLOSE, Lift.STATE_IDLE);
+  }
+
+  stateUnloading() {
+    // TODO
   }
 }
 
@@ -81,7 +86,8 @@ Lift.SPEED_DOORS_CLOSE = 30;
 Lift.STATE_IDLE = "idle";
 Lift.STATE_MOVING = "moving";
 Lift.STATE_DOORS_OPENING = "opening";
-Lift.STATE_DOORS_OPEN = "open";
+Lift.STATE_UNLOADING = "unloading";
+Lift.STATE_LOADING = "loading";
 Lift.STATE_DOORS_CLOSING = "closing";
 
 
