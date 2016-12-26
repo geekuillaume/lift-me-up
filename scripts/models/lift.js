@@ -25,14 +25,14 @@ class Lift extends EventEmitter {
 
   idleOrMove() {
     if(this.queuedFloors.length === 0) {
-      this.setNextState(Lift.STATE_IDLE);
+      this.setState(Lift.STATE_IDLE);
     }
     else {
-      this.setNextState(Lift.STATE_MOVING);
+      this.setState(Lift.STATE_MOVING);
     }
   }
 
-  setNextState(state) {
+  setState(state) {
     log("Setting new state to " + state);
 
     this.state = state;
@@ -53,12 +53,12 @@ class Lift extends EventEmitter {
         this.currentFloor = this.queuedFloors.pop();
 
         // Start opening doors
-        this.setNextState(Lift.STATE_DOORS_OPENING);
+        this.setState(Lift.STATE_DOORS_OPENING);
       }
     }
     else if(this.state === Lift.STATE_DOORS_OPENING && this.currentAnimationStep >= Lift.SPEED_DOORS_OPEN) {
       // Doors are now open
-      this.setNextState(Lift.STATE_DOORS_OPEN);
+      this.setState(Lift.STATE_DOORS_OPEN);
     }
     else if(this.state === Lift.STATE_DOORS_CLOSING && this.currentAnimationStep >= Lift.SPEED_DOORS_CLOSE) {
       // Doors are now closed, move to next destination if any

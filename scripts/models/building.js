@@ -27,6 +27,13 @@ class Building extends EventEmitter {
   tick() {
     this.emit(Building.TICK);
   }
+
+  fastForward(ticksCount) {
+    while(ticksCount > 0) {
+      ticksCount -= 1;
+      this.tick();
+    }
+  }
 }
 
 Building.STATE_CREATING = "creation";

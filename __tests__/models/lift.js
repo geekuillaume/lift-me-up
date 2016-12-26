@@ -27,4 +27,27 @@ describe("Lift model", () => {
 
     assert.deepEqual(lift.queuedFloors, [floor]);
   });
+
+  it("should move to next floor", () => {
+    var building = new Building();
+    var ground = new Floor(building);
+    var firstFloor = new Floor(building);
+    building.addFloor(ground);
+    building.addFloor(firstFloor);
+
+    var lift = new Lift(building, ground);
+
+    building.start();
+    lift.addCommand(firstFloor);
+
+    expect(lift.currentFloor).toBe(ground);
+    assert.deepEqual(lift.queuedFloors, [firstFloor]);
+    assert.equal(lift.state, Lift.STATE_MOVING);
+
+    building.fastForward(Lift.SPEED_MOVE_ONE_FLOOR);
+
+    expect(lift.currentFloor).toBe(firstFloor);
+    assert.deepEqual(lift.queuedFloors, []);
+    expect(lift.state).toBe(Lift.STATE_DOORS_OPENING);
+  });
 });
