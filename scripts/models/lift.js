@@ -1,27 +1,21 @@
 "use strict";
-const EventEmitter = require('events');
 const log = require('debug')('liftmeup:lift');
 
+const StateMachine = require('./statemachine');
 const Building = require('./building');
+const Floor = require('./floor');
 
-class Lift extends EventEmitter {
+class Lift extends StateMachine {
   constructor(building, floor) {
     super();
     this.building = building;
     this.queuedFloors = [];
     this.currentFloor = floor;
-    this.currentAnimationStep = 0;
+    this.inLift = [];
+
     this.state = Lift.STATE_IDLE;
 
-    this.stateFunctions = {};
-    this.stateFunctions[Lift.STATE_IDLE] = this.stateIdle;
-    this.stateFunctions[Lift.STATE_MOVING] = this.stateMoving;
-    this.stateFunctions[Lift.STATE_DOORS_OPENING] = this.stateDoorsOpening;
-    this.stateFunctions[Lift.STATE_UNLOADING] = this.stateUnloading;
-    this.stateFunctions[Lift.STATE_LOADING] = this.stateLoading;
-    this.stateFunctions[Lift.STATE_DOORS_CLOSING] = this.stateDoorsClosing;
-
-    // Working around socping issues, adding "buffer" function keeping the this context intact
+    // Working around scoping issues, adding "buffer" function keeping the this context intact
     building.on(Building.TICK, () => this.tick());
   }
 
@@ -35,24 +29,6 @@ class Lift extends EventEmitter {
     if(this.queuedFloors.length > 0) {
       this.setState(Lift.STATE_MOVING);
     }
-  }
-
-  setState(state) {
-    log("Setting new state to " + state);
-
-    this.state = state;
-    this.currentAnimationStep = 0;
-  }
-
-  waitForAnimation(threshold, nextState) {
-    if(this.currentAnimationStep >= threshold) {
-      this.setState(nextState);
-    }
-  }
-
-  tick() {
-    this.currentAnimationStep += 1;
-    this.stateFunctions[this.state].bind(this)();
   }
 
   stateMoving() {
@@ -75,7 +51,10 @@ class Lift extends EventEmitter {
   }
 
   stateUnloading() {
-    // TODO
+    this.currentFloor.emit(Floor.EVENT_UNLOAD_REQUEST, {
+      lift: this,
+      leaving: this.inLift.filter((p) => p.destination === this.currentFloor)
+    });
   }
 }
 
@@ -83,12 +62,12 @@ Lift.SPEED_MOVE_ONE_FLOOR = 20;
 Lift.SPEED_DOORS_OPEN = 30;
 Lift.SPEED_DOORS_CLOSE = 30;
 
-Lift.STATE_IDLE = "idle";
-Lift.STATE_MOVING = "moving";
-Lift.STATE_DOORS_OPENING = "opening";
-Lift.STATE_UNLOADING = "unloading";
-Lift.STATE_LOADING = "loading";
-Lift.STATE_DOORS_CLOSING = "closing";
+Lift.STATE_IDLE = "Idle";
+Lift.STATE_MOVING = "Moving";
+Lift.STATE_DOORS_OPENING = "DoorsOpening";
+Lift.STATE_UNLOADING = "Unloading";
+Lift.STATE_LOADING = "Koading";
+Lift.STATE_DOORS_CLOSING = "DoorsClosing";
 
 
 module.exports = Lift;
