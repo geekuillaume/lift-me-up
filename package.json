@@ -20,6 +20,8 @@
   "homepage": "https://github.com/Neamar/lift-me-up#readme",
   "devDependencies": {
     "debug": "^2.5.1",
-    "jest": "^18.0.0"
+    "jest": "^18.0.0",
+    "jscs": "^3.0.7",
+    "jshint": "^2.9.4"
   }
 }
