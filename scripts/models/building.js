@@ -29,6 +29,10 @@ class Building extends EventEmitter {
   }
 
   fastForward(ticksCount) {
+    if(!ticksCount || ticksCount === 0) {
+      throw new Error("Empty ticks count, please double check value.");
+    }
+
     while(ticksCount > 0) {
       ticksCount -= 1;
       this.tick();

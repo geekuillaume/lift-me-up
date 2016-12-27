@@ -11,7 +11,9 @@ class Lift extends StateMachine {
     this.building = building;
     this.queuedFloors = [];
     this.currentFloor = floor;
+    this.enteringLift = [];
     this.inLift = [];
+    this.exitingLift = [];
 
     this.state = Lift.STATE_IDLE;
 
@@ -19,7 +21,21 @@ class Lift extends StateMachine {
     building.on(Building.TICK, () => this.tick());
   }
 
-  addCommand(floor) {
+  moveTo(oldList, newList, person) {
+    if(oldList) {
+      var index = this[oldList].indexOf(person);
+      if(index === -1) {
+        throw new Error("Can't move person from list, does not exist yet! (" + oldList + " => " + newList + ")");
+      }
+      this[oldList].splice(index, 1);
+    }
+
+    if(newList) {
+      this[newList].push(person);
+    }
+  }
+
+  onAddCommand(floor) {
     log("Queuing new floor: " + floor.number);
 
     this.queuedFloors.push(floor);
@@ -51,10 +67,32 @@ class Lift extends StateMachine {
   }
 
   stateUnloading() {
-    this.currentFloor.emit(Floor.EVENT_UNLOAD_REQUEST, {
-      lift: this,
-      leaving: this.inLift.filter((p) => p.destination === this.currentFloor)
-    });
+    if(this.currentAnimationStep === 1) {
+      this.once(Lift.EVENT_UNLOADED, () => {
+        this.setState(Lift.STATE_LOADING);
+      });
+
+      this.currentFloor.emit(Floor.EVENT_UNLOAD_REQUEST, {
+        lift: this,
+        leaving: this.inLift.filter((p) => p.destination === this.currentFloor)
+      });
+    }
+  }
+
+  stateLoading() {
+    if(this.currentAnimationStep === 1) {
+      this.once(Lift.EVENT_LOADED, () => {
+        this.setState(Lift.STATE_DOORS_CLOSING);
+      });
+
+      this.currentFloor.emit(Floor.EVENT_LOAD_REQUEST, {
+        lift: this,
+      });
+    }
+
+    if(this.enteringLift.length === 0) {
+      this.setState(Lift.STATE_DOORS_CLOSING);
+    }
   }
 }
 
@@ -66,8 +104,11 @@ Lift.STATE_IDLE = "Idle";
 Lift.STATE_MOVING = "Moving";
 Lift.STATE_DOORS_OPENING = "DoorsOpening";
 Lift.STATE_UNLOADING = "Unloading";
-Lift.STATE_LOADING = "Koading";
+Lift.STATE_LOADING = "Loading";
 Lift.STATE_DOORS_CLOSING = "DoorsClosing";
+
+Lift.EVENT_UNLOADED = "unloaded";
+Lift.EVENT_LOADED = "loaded";
 
 
 module.exports = Lift;

@@ -23,7 +23,7 @@ describe("Lift model", () => {
     var lift = new Lift(building, floor);
 
     building.start();
-    lift.addCommand(floor);
+    lift.onAddCommand(floor);
 
     assert.deepEqual(lift.queuedFloors, [floor]);
   });
@@ -38,7 +38,7 @@ describe("Lift model", () => {
     var lift = new Lift(building, ground);
 
     building.start();
-    lift.addCommand(firstFloor);
+    lift.onAddCommand(firstFloor);
     building.tick();
 
     // Lift should start moving
@@ -63,7 +63,7 @@ describe("Lift model", () => {
     var lift = new Lift(building, ground);
 
     building.start();
-    lift.addCommand(ground);
+    lift.onAddCommand(ground);
     building.tick();
     assert.equal(lift.state, Lift.STATE_MOVING);
     building.tick();
