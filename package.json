@@ -4,7 +4,7 @@
   "description": "HTML5 game ===========",
   "main": "scripts/index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --coverage",
     "lint": "jshint scripts/ __tests__/",
     "style": "jscs ."
   },
@@ -23,5 +23,12 @@
     "jest": "^18.0.0",
     "jscs": "^3.0.7",
     "jshint": "^2.9.4"
+  },
+  "jest": {
+    "verbose": true,
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "scripts/**/*.js"
+    ]
   }
 }
