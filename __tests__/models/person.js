@@ -76,5 +76,8 @@ describe("Person model", () => {
 
     building.fastForward(Person.SPEED_EXITING_LIFT);
     expect(person.state).toBe(Person.STATE_EXITING);
+
+    building.fastForward(Person.SPEED_EXITING);
+    expect(person.state).toBe(Person.STATE_EXITED);
   });
 });

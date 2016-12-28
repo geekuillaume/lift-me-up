@@ -23,17 +23,18 @@ class EventEmitter {
 
   once(event, listener) {
     var realListener = function realListener(options) {
-      this.remove(event, realListener);
+      this.removeListener(event, realListener);
       listener(options);
     };
 
     this.on(event, realListener);
   }
 
-  remove(event, listener) {
+  removeListener(event, listener) {
     var index = this._events[event].indexOf(listener);
     if(index === -1) {
-      throw new Error("Listener can't be removed (does not exist");
+      console.log(this._events[event]);
+      throw new Error("Listener can't be removed (does not exist)");
     }
 
     this._events[event].splice(index, 1);

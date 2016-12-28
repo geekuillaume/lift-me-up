@@ -15,7 +15,8 @@ class Person extends StateMachine {
 
     this.state = Person.STATE_APPEARING;
 
-    building.on(Building.TICK, () => this.tick());
+    this.ticker = () => this.tick();
+    building.on(Building.TICK, this.ticker);
   }
 
   onLiftArrivedToEnter(lift) {
@@ -73,7 +74,7 @@ class Person extends StateMachine {
     this.floor = null;
 
     // No need to tick anymore.
-    this.building.removeListener(Building.TICK, () => this.tick());
+    this.building.removeListener(Building.TICK, this.ticker);
   }
 
   stateExited() {

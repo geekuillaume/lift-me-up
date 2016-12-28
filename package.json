@@ -5,6 +5,7 @@
   "main": "scripts/index.js",
   "scripts": {
     "test": "jest --coverage",
+    "test-watch": "jest --coverage --watch",
     "lint": "jshint scripts/ __tests__/",
     "style": "jscs ."
   },
