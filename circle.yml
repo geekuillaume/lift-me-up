@@ -1,3 +1,13 @@
+machine:
+  pre:
+    - mkdir ~/.yarn-cache
+dependencies:
+  pre:
+    - curl -o- -L https://yarnpkg.com/install.sh | bash
+  cache_directories:
+    - ~/.yarn-cache
+  override:
+    - yarn install
 test:
   pre:
     - npm run-script lint
