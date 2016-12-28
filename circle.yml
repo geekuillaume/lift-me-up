@@ -1,3 +1,6 @@
+general:
+  artifacts:
+    - "coverage"
 test:
   pre:
     - npm run-script lint
