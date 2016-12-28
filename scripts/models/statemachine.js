@@ -1,6 +1,6 @@
 "use strict";
 
-const EventEmitter = require('events');
+const EventEmitter = require('./eventemitter');
 const log = require('debug')('liftmeup:statemachine');
 const noop = function() {};
 
