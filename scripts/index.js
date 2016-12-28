@@ -1,0 +1,5 @@
+require('./models/building.js')
+require('./models/floor.js')
+require('./models/lift.js')
+require('./models/person.js')
+require('./models/statemachine.js')
